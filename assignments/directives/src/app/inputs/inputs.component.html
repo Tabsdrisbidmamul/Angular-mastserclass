@@ -1,0 +1,13 @@
+<button (click)="onClickToggleContent()">
+  {{ toggleContent ? "Hide Details" : "Show Details" }}
+</button>
+
+<p *ngIf="toggleContent">Tuna</p>
+
+<div
+  *ngFor="let click of buttonClicks; let i = index"
+  [ngStyle]="{ backgroundColor: i >= 5 ? 'blue' : 'transparent' }"
+  [ngClass]="{ log: i >= 5 }"
+>
+  {{ click }}
+</div>
