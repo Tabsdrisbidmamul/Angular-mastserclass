@@ -10,6 +10,14 @@
       "name": "Section4-debugging errors",
       "url": "http://localhost:4200",
       "webRoot": "${workspaceFolder}//section4-debugging"
+    },
+
+    {
+      "type": "pwa-chrome",
+      "request": "launch",
+      "name": "Section5-props-databinding",
+      "url": "http://localhost:4200",
+      "webRoot": "${workspaceFolder}//section5-comp-databind-deepdive"
     }
   ]
 }
