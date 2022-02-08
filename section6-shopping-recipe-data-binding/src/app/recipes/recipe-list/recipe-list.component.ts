@@ -11,13 +11,13 @@ export class RecipeListComponent implements OnInit {
 
   recipes: IRecipes[] = [
     new Recipe(
-      'test',
-      'test recipe desc',
+      'test 1',
+      'test 1 recipe desc',
       'https://upload.wikimedia.org/wikipedia/commons/3/39/Recipe.jpg'
     ),
     new Recipe(
-      'test',
-      'test recipe desc',
+      'test 2',
+      'test 2 recipe desc',
       'https://upload.wikimedia.org/wikipedia/commons/3/39/Recipe.jpg'
     ),
   ];
