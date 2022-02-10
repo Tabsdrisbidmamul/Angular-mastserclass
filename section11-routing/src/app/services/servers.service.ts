@@ -25,7 +25,8 @@ export class ServersService {
     const server = this.servers.find((s) => {
       return s.id === id;
     });
-    return server;
+
+    return server !== undefined ? server : { id: -1, name: '', status: '' };
   }
 
   updateServer(id: number, serverInfo: { name: string; status: string }) {
