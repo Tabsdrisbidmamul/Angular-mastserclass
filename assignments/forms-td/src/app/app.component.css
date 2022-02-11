@@ -1,0 +1,9 @@
+.container {
+  margin-top: 30px;
+}
+
+form input.ng-invalid.ng-touched {
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom: 2px solid #e74c3c;
+}

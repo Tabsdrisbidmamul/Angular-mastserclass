@@ -1,0 +1,81 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form (ngSubmit)="submit()" #form="ngForm">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            class="form-control"
+            type="email"
+            name="email"
+            id="email"
+            ngModel
+            required
+            email
+            #email="ngModel"
+          />
+          <span class="help-block" *ngIf="!email.valid && email.touched">
+            Please enter an email
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="subscriptions">Subscriptions</label>
+          <select
+            class="form-control"
+            name="subscriptions"
+            id="subscriptions"
+            [ngModel]="subscriptionDefault"
+            #subscriptionsSelect="ngModel"
+          >
+            <option
+              *ngFor="let subscription of subscriptions"
+              [value]="subscription"
+            >
+              {{ subscription }}
+            </option>
+          </select>
+          <span
+            class="help-block"
+            *ngIf="!subscriptionsSelect.valid && subscriptionsSelect.touched"
+          >
+            Please choose a subscription
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            ngModel
+            required
+            class="form-control"
+            #password="ngModel"
+          />
+          <span class="help-block" *ngIf="!password.valid && password.touched">
+            Please enter a password
+          </span>
+        </div>
+
+        <button class="btn btn-primary" type="submit" [disabled]="!form.valid">
+          Submit
+        </button>
+
+        <span class="help-block" *ngIf="!form.valid && submitted"
+          >Some fields are invalid, please correct the values above before
+          submitting</span
+        >
+      </form>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="submitted">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <p>Email: {{ values.email }}</p>
+      <p>Subscriptions: {{ values.subscriptions }}</p>
+      <p>Password: {{ values.password }}</p>
+    </div>
+  </div>
+</div>
