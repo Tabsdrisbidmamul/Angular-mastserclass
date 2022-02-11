@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
         this.validateProjectNameAsync.bind(this)
       ),
       email: new FormControl(null, [Validators.required, Validators.email]),
-      projectStatus: new FormControl('stable'),
+      projectStatus: new FormControl(this.statusValues[0]),
     });
   }
 
