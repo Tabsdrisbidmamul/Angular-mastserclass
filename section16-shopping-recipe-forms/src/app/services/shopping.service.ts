@@ -5,11 +5,12 @@ import { IIngredient, Ingredient } from '../models/ingreidents.model';
 @Injectable({ providedIn: 'root' })
 export class ShoppingService {
   ingredientAdded$ = new Subject<IIngredient[]>();
-  
+  ingredientEditing$ = new Subject<IIngredient>();
   shoppingEditForm$ = new ReplaySubject<{ name: string; amount: number }>(1);
+
   shoppingEditFormObject: { name: string; amount: number } = {
     name: '',
-    amount: 0,
+    amount: null,
   };
 
   private _ingredients: IIngredient[] = [
@@ -19,6 +20,10 @@ export class ShoppingService {
 
   get ingredients() {
     return this._ingredients.slice();
+  }
+
+  storeEditIngredient(ingredient: IIngredient) {
+    this.ingredientEditing$.next(ingredient);
   }
 
   storeShopping(data: { name: string; amount: number }) {
@@ -39,8 +44,32 @@ export class ShoppingService {
   }
 
   addIngredient$() {
-    this.shoppingEditForm$.subscribe((data) => {
-      this.addIngredient(new Ingredient(data.name, data.amount));
-    });
+    this.shoppingEditForm$
+      .subscribe((data) => {
+        this.addIngredient(new Ingredient(data.name, data.amount));
+      })
+      .unsubscribe();
+  }
+
+  editIngredient$() {
+    this.shoppingEditForm$
+      .subscribe((data) => {
+        const index = this._ingredients.findIndex(
+          (el) => el.name === data.name
+        );
+
+        this._ingredients[index] = data;
+      })
+      .unsubscribe();
+
+    this.ingredientAdded$.next(this.ingredients);
+  }
+
+  deleteIngredient(ingredient: IIngredient) {
+    this._ingredients = this._ingredients.filter(
+      (_ingredient) => _ingredient.name !== ingredient.name
+    );
+
+    this.ingredientAdded$.next(this.ingredients);
   }
 }

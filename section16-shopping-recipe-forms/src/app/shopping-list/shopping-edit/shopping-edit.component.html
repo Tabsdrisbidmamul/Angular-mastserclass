@@ -11,6 +11,15 @@
             class="form-control"
             [formControlName]="'name'"
           />
+          <span
+            class="help-block"
+            *ngIf="
+              !shoppingForm.get('name').valid &&
+              shoppingForm.get('name').touched
+            "
+          >
+            This is a required field
+          </span>
         </div>
         <div class="col-sm-2 form-group">
           <label for="amount">Amount</label>
@@ -21,13 +30,43 @@
             class="form-control"
             [formControlName]="'amount'"
           />
+          <span
+            class="help-block"
+            *ngIf="
+              !shoppingForm.get('amount').valid &&
+              shoppingForm.get('amount').touched
+            "
+          >
+            This is a required field
+            <span
+              class="help-block"
+              *ngIf="shoppingForm.get('amount').errors['min']"
+            >
+              Value must be greater than 0
+            </span>
+          </span>
         </div>
       </div>
       <div class="row">
-        <div class="col-xs-12">
-          <button class="btn btn-success" type="submit">Add</button>
-          <button class="btn btn-danger" type="button">Delete</button>
-          <button class="btn btn-primary" type="button">Clear</button>
+        <div class="col-xs-12 btn-group">
+          <button
+            [disabled]="!shoppingForm.valid"
+            class="btn btn-success"
+            type="submit"
+          >
+            {{ editMode ? "Edit" : "Add" }}
+          </button>
+          <button
+            class="btn btn-danger"
+            type="button"
+            *ngIf="editMode"
+            (click)="deleteIngredient()"
+          >
+            Delete
+          </button>
+          <button class="btn btn-primary" type="button" (click)="clearForm()">
+            Clear
+          </button>
         </div>
       </div>
     </form>

@@ -1,3 +1,4 @@
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import {
   Component,
   ElementRef,
@@ -20,11 +21,9 @@ import { ShoppingService } from 'src/app/services/shopping.service';
 })
 export class ShoppingEditComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject();
-
-  @ViewChild('nameInput') ingredientName: ElementRef;
-  @ViewChild('amountInput') ingredientAmount: ElementRef;
-
   shoppingForm: FormGroup;
+  editMode = false;
+  selectedIngredient: IIngredient;
 
   constructor(private shoppingService: ShoppingService) {}
 
@@ -36,7 +35,7 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
       ),
       amount: new FormControl(
         this.shoppingService.shoppingEditFormObject.amount,
-        [Validators.required, Validators.minLength(1)]
+        [Validators.required, Validators.min(1)]
       ),
     });
 
@@ -47,6 +46,15 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
           this.shoppingForm.setValue(data);
         }
       });
+
+    this.shoppingService.ingredientEditing$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((ingredient: IIngredient) => {
+        this.editMode = true;
+        this.selectedIngredient = ingredient;
+
+        this.shoppingForm.setValue(ingredient);
+      });
   }
 
   ngOnDestroy(): void {
@@ -54,12 +62,30 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
     this.destroy$.unsubscribe();
   }
 
+  clearForm() {
+    this.shoppingForm.reset();
+    this.editMode = false;
+  }
+
   onAddIngredient() {
     this.shoppingService.storeShopping(this.shoppingForm.value);
     this.shoppingService.addIngredient$();
   }
 
+  onEditIngredient() {
+    this.shoppingService.storeShopping(this.shoppingForm.value);
+    this.shoppingService.editIngredient$();
+  }
+
+  deleteIngredient() {
+    this.shoppingService.deleteIngredient(this.selectedIngredient);
+
+    this.clearForm();
+  }
+
   submit() {
-    this.onAddIngredient();
+    this.editMode ? this.onEditIngredient() : this.onAddIngredient();
+
+    this.clearForm();
   }
 }
