@@ -18,6 +18,14 @@
       "name": "Section5-props-databinding",
       "url": "http://localhost:4200",
       "webRoot": "${workspaceFolder}//section5-comp-databind-deepdive"
+    },
+
+    {
+      "type": "pwa-chrome",
+      "request": "launch",
+      "name": "Section18-http",
+      "url": "http://localhost:4200",
+      "webRoot": "${workspaceFolder}//section18-http"
     }
   ]
 }
