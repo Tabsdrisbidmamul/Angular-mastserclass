@@ -26,6 +26,14 @@
       "name": "Section18-http",
       "url": "http://localhost:4200",
       "webRoot": "${workspaceFolder}//section18-http"
+    },
+
+    {
+      "type": "pwa-chrome",
+      "request": "launch",
+      "name": "Section19-shopping-recipe-HTTP",
+      "url": "http://localhost:4200",
+      "webRoot": "${workspaceFolder}//section19-shopping-recipe-HTTP"
     }
   ]
 }
