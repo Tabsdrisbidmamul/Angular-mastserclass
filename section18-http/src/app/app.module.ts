@@ -4,7 +4,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { GlobalHttpInterceptor } from './services/globalInterceptor.service';
+import { GlobalHttpInterceptor } from './services/global-interceptor.service';
+import { AuthInterceptor } from './services/auth-interceptor.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -13,6 +14,11 @@ import { GlobalHttpInterceptor } from './services/globalInterceptor.service';
     {
       provide: HTTP_INTERCEPTORS,
       useClass: GlobalHttpInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
       multi: true,
     },
   ],

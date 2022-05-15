@@ -1,7 +1,12 @@
-import { HttpClient } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpEventType,
+  HttpHeaders,
+  HttpParams,
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Posts } from '../models/Posts.model';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { ReplaySubject, Subject, throwError } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
@@ -19,7 +24,10 @@ export class PostsService {
     this._http
       .post<{ name: string }>(
         'https://angular-e2153-default-rtdb.firebaseio.com/posts.json',
-        postData
+        postData,
+        {
+          observe: 'body',
+        }
       )
       .subscribe((response) => {
         postId = response.name;
@@ -38,7 +46,18 @@ export class PostsService {
 
   deletePosts() {
     this._http
-      .delete('https://angular-e2153-default-rtdb.firebaseio.com/posts.json')
+      .delete('https://angular-e2153-default-rtdb.firebaseio.com/posts.json', {
+        observe: 'events',
+        responseType: 'json',
+      })
+      .pipe(
+        tap((event) => {
+          console.log(event);
+          if (event.type === HttpEventType.Response) {
+            console.log(event.body);
+          }
+        })
+      )
       .subscribe(() => {
         this.loadedPosts$.next([]);
       });
@@ -46,9 +65,17 @@ export class PostsService {
 
   getPostsSubject() {
     this.isFetching$.next(true);
+    let searchParams = new HttpParams();
+    searchParams = searchParams.append('print', 'pretty');
+
     this._http
       .get<{ content: Posts }>(
-        'https://angular-e2153-default-rtdb.firebaseio.com/posts.json'
+        'https://angular-e2153-default-rtdb.firebaseio.com/posts.json',
+        {
+          headers: new HttpHeaders({ 'Custom-Headers': 'Hello' }),
+          params: searchParams,
+          responseType: 'json',
+        }
       )
       .pipe(
         map(this.transformPosts),
