@@ -40,7 +40,7 @@ export class AgentService {
       )
       .pipe(
         tap((data) => {
-          console.log(data);
+          console.log('recipe data ', data);
           const _data = data ?? [];
           this._recipeService.addRecipes(_data);
         })

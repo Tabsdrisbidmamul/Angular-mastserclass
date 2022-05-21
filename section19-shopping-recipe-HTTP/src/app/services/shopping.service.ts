@@ -5,16 +5,18 @@ import {
   IIngredientId,
   Ingredient,
 } from '../models/ingreidents.model';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({ providedIn: 'root' })
 export class ShoppingService {
   ingredientAdded$ = new ReplaySubject<IIngredientId[]>(1);
   ingredientEditing$ = new Subject<IIngredient>();
-  shoppingEditForm$ = new ReplaySubject<{ name: string; amount: number }>(1);
+  shoppingEditForm$ = new ReplaySubject<IIngredientId>(1);
 
-  shoppingEditFormObject: { name: string; amount: number } = {
+  shoppingEditFormObject: IIngredientId = {
     name: '',
     amount: null,
+    id: uuidv4(),
   };
 
   private _ingredients: IIngredient[] = [];
@@ -36,7 +38,7 @@ export class ShoppingService {
     this.ingredientAdded$.next(ingredients);
   }
 
-  addIngredient(ingredient: IIngredient) {
+  addIngredient(ingredient: IIngredientId) {
     const ingredientIndex = this.ingredients.findIndex(
       (_ingredient) => _ingredient.name === ingredient.name
     );
@@ -52,7 +54,7 @@ export class ShoppingService {
   addIngredient$() {
     this.shoppingEditForm$
       .subscribe((data) => {
-        this.addIngredient(new Ingredient(data.name, data.amount));
+        this.addIngredient(new Ingredient(data.name, data.amount, data.id));
       })
       .unsubscribe();
   }
@@ -71,7 +73,7 @@ export class ShoppingService {
     this.ingredientAdded$.next(this.ingredients);
   }
 
-  deleteIngredient(ingredient: IIngredient) {
+  deleteIngredient(ingredient: IIngredientId) {
     this._ingredients = this._ingredients.filter(
       (_ingredient) => _ingredient.name !== ingredient.name
     );

@@ -9,9 +9,10 @@ export interface IIngredientId {
   id?: string;
 }
 
-export class Ingredient implements IIngredient {
-  constructor(public name: string, public amount: number) {
+export class Ingredient implements IIngredientId {
+  constructor(public name: string, public amount: number, public id: string) {
     this.name = name;
     this.amount = amount;
+    this.id = id;
   }
 }

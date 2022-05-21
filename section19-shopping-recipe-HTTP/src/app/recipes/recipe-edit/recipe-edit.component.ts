@@ -9,8 +9,9 @@ import {
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { IRecipe } from 'src/app/models/recipe.model';
+import { IRecipe, IRecipeId } from 'src/app/models/recipe.model';
 import { RecipeService } from 'src/app/services/recipe.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-recipe-edit',
@@ -20,7 +21,7 @@ import { RecipeService } from 'src/app/services/recipe.service';
 export class RecipeEditComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject();
 
-  selectedRecipe: IRecipe | null = null;
+  selectedRecipe: IRecipeId | null = null;
   editMode = false;
 
   recipeForm: FormGroup;
@@ -110,6 +111,11 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
       });
     }
 
+    let id: string =
+      this.selectedRecipe !== undefined ? this.selectedRecipe.id : uuidv4();
+
+    console.log('id ', id);
+
     this.recipeForm = new FormGroup({
       name: new FormControl(
         this.recipeService.recipeForm.name,
@@ -127,7 +133,11 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
       ),
 
       ingredients: new FormArray(recipeIngredients),
+
+      id: new FormControl(id, Validators.required),
     });
+
+    console.log('recipe form ', this.recipeForm);
   }
 
   addIngredient() {

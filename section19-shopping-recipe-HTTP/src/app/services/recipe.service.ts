@@ -5,17 +5,18 @@ import { IRecipe, IRecipeId, Recipe } from '../models/recipe.model';
 
 @Injectable({ providedIn: 'root' })
 export class RecipeService {
-  selectedRecipe = new ReplaySubject<IRecipe>(1);
-  recipeAdded = new Subject<IRecipe[]>();
+  selectedRecipe = new ReplaySubject<IRecipeId>(1);
+  recipeAdded = new ReplaySubject<IRecipeId[]>(1);
 
-  selectedRecipe$: Observable<IRecipe>;
+  selectedRecipe$: Observable<IRecipeId>;
   recipeAdded$: Observable<IRecipeId[]>;
 
-  recipeForm: IRecipe = {
+  recipeForm: IRecipeId = {
     name: '',
     imagePath: '',
     description: '',
     ingredients: [],
+    id: null,
   };
 
   constructor() {
@@ -23,7 +24,7 @@ export class RecipeService {
     this.recipeAdded$ = this.recipeAdded.asObservable();
   }
 
-  storeRecipe(recipe: IRecipe) {
+  storeRecipe(recipe: IRecipeId) {
     this.selectedRecipe.next(recipe);
   }
 
@@ -31,7 +32,7 @@ export class RecipeService {
     this.recipeForm = { ...recipe };
   }
 
-  private _recipes: IRecipe[] = [];
+  private _recipes: IRecipeId[] = [];
 
   get recipes() {
     return this._recipes.slice();
@@ -46,19 +47,19 @@ export class RecipeService {
     this.recipeAdded.next(this.recipes);
   }
 
-  addRecipe(recipe: IRecipe) {
+  addRecipe(recipe: IRecipeId) {
     recipe.name = recipe.name.replace(/\s/g, '-');
     this._recipes.push(recipe);
     this.recipeAdded.next(this.recipes);
   }
 
-  updateRecipe(recipe: IRecipe, index: number) {
+  updateRecipe(recipe: IRecipeId, index: number) {
     recipe.name = recipe.name.replace(/\s/g, '-');
     this._recipes[index] = recipe;
     this.recipeAdded.next(this.recipes);
   }
 
-  deleteRecipe(recipe: IRecipe) {
+  deleteRecipe(recipe: IRecipeId) {
     this._recipes = this._recipes.filter((el) => el.name !== recipe.name);
     this.recipeAdded.next(this.recipes);
   }

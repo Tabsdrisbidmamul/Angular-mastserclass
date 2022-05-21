@@ -81,6 +81,13 @@
         </div>
       </div>
 
+      <input
+        type="hidden"
+        name="id"
+        class="form-control"
+        formControlName="id"
+      />
+
       <div class="row">
         <div class="col-xs-12" [formArrayName]="'ingredients'">
           <div
@@ -108,7 +115,13 @@
             </div>
 
             <div class="col-xs-2">
-              <button type="button" class="btn btn-danger" (click)="deleteIngredient(i)">&times;</button>
+              <button
+                type="button"
+                class="btn btn-danger"
+                (click)="deleteIngredient(i)"
+              >
+                &times;
+              </button>
             </div>
           </div>
 

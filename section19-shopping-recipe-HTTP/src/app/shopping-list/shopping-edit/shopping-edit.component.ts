@@ -11,7 +11,7 @@ import {
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { IIngredient, Ingredient } from 'src/app/models/ingreidents.model';
+import { IIngredient, IIngredientId, Ingredient } from 'src/app/models/ingreidents.model';
 import { ShoppingService } from 'src/app/services/shopping.service';
 
 @Component({
@@ -23,7 +23,7 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject();
   shoppingForm: FormGroup;
   editMode = false;
-  selectedIngredient: IIngredient;
+  selectedIngredient: IIngredientId;
 
   constructor(private shoppingService: ShoppingService) {}
 
