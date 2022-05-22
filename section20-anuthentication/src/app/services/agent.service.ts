@@ -40,7 +40,6 @@ export class AgentService {
       )
       .pipe(
         tap((data) => {
-          console.log('recipe data ', data);
           const _data = data ?? [];
           this._recipeService.addRecipes(_data);
         })
@@ -62,7 +61,6 @@ export class AgentService {
 
   fetchIngredients() {
     this.fetch<IIngredientId>('shoppingList').subscribe((data) => {
-      console.log(data);
       const _data = data.body ?? [];
       this._shoppingService.addIngredients(_data);
     });
