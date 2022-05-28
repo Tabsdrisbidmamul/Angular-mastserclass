@@ -1,10 +1,13 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { Ingredient } from '../models/ingreidents.model';
 import { IRecipe, IRecipeId, Recipe } from '../models/recipe.model';
+import { AgentService } from './agent.service';
 
 @Injectable({ providedIn: 'root' })
-export class RecipeService {
+export class RecipeService extends AgentService {
   selectedRecipe = new ReplaySubject<IRecipeId>(1);
   recipeAdded = new ReplaySubject<IRecipeId[]>(1);
 
@@ -19,7 +22,9 @@ export class RecipeService {
     id: null,
   };
 
-  constructor() {
+  constructor(protected _http: HttpClient) {
+    super(_http);
+
     this.selectedRecipe$ = this.selectedRecipe.asObservable();
     this.recipeAdded$ = this.recipeAdded.asObservable();
   }
@@ -62,5 +67,38 @@ export class RecipeService {
   deleteRecipe(recipe: IRecipeId) {
     this._recipes = this._recipes.filter((el) => el.name !== recipe.name);
     this.recipeAdded.next(this.recipes);
+  }
+
+  fetchRecipes() {
+    return this.fetch<IRecipeId>('recipes')
+      .pipe(
+        map((recipes) => {
+          return recipes.body?.map((el: IRecipeId) => {
+            return {
+              ...el,
+              ingredients: !el.ingredients ? [] : el.ingredients,
+            };
+          });
+        })
+      )
+      .pipe(
+        tap((data) => {
+          const _data = data ?? [];
+          this.addRecipes(_data);
+        })
+      );
+  }
+
+  putRecipes() {
+    this.recipeAdded$
+      .subscribe((recipes) => {
+        this._recipes = recipes;
+      })
+      .unsubscribe();
+
+    this.put<IRecipe[]>('recipes', this.recipes).subscribe((data) => {
+      const _data = data as IRecipeId[];
+      this.addRecipes(_data);
+    });
   }
 }

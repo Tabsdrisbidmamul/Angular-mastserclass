@@ -1,7 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { IIngredient, Ingredient } from 'src/app/models/ingreidents.model';
-import { IRecipe } from 'src/app/models/recipe.model';
+import {
+  IIngredient,
+  IIngredientId,
+  Ingredient,
+} from 'src/app/models/ingreidents.model';
+import { IRecipe, IRecipeId } from 'src/app/models/recipe.model';
 import { RecipeService } from 'src/app/services/recipe.service';
 import { ShoppingService } from 'src/app/services/shopping.service';
 
@@ -11,7 +15,7 @@ import { ShoppingService } from 'src/app/services/shopping.service';
   styleUrls: ['./recipe-detail.component.css'],
 })
 export class RecipeDetailComponent implements OnInit {
-  currentRecipe: IRecipe;
+  currentRecipe: IRecipeId;
 
   constructor(
     private shoppingService: ShoppingService,
@@ -27,7 +31,7 @@ export class RecipeDetailComponent implements OnInit {
   }
 
   sendToShoppingList() {
-    this.currentRecipe.ingredients.forEach((ingredient: IIngredient) =>
+    this.currentRecipe.ingredients.forEach((ingredient: IIngredientId) =>
       this.shoppingService.addIngredient(ingredient)
     );
     this.router.navigate(['shopping-list']);

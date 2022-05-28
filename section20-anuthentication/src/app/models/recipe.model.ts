@@ -1,4 +1,4 @@
-import { IIngredient } from './ingreidents.model';
+import { IIngredient, IIngredientId } from './ingreidents.model';
 
 export interface IRecipe {
   name: string;
@@ -11,7 +11,7 @@ export interface IRecipeId {
   name: string;
   description: string;
   imagePath: string;
-  ingredients: IIngredient[];
+  ingredients: IIngredientId[];
   id?: string;
 }
 
@@ -19,13 +19,13 @@ export class Recipe implements IRecipe {
   name = '';
   description = '';
   imagePath = '';
-  ingredients: IIngredient[];
+  ingredients: IIngredientId[];
 
   constructor(
     name: string,
     description: string,
     imagePath: string,
-    ingredients: IIngredient[]
+    ingredients: IIngredientId[]
   ) {
     this.name = name;
     this.description = description;

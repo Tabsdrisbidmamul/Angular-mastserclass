@@ -6,7 +6,7 @@ export interface IIngredient {
 export interface IIngredientId {
   name: string;
   amount: number;
-  id?: string;
+  id: string;
 }
 
 export class Ingredient implements IIngredientId {

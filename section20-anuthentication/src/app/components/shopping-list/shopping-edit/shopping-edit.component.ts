@@ -11,7 +11,11 @@ import {
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { IIngredient, IIngredientId, Ingredient } from 'src/app/models/ingreidents.model';
+import {
+  IIngredient,
+  IIngredientId,
+  Ingredient,
+} from 'src/app/models/ingreidents.model';
 import { ShoppingService } from 'src/app/services/shopping.service';
 
 @Component({
@@ -37,6 +41,10 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
         this.shoppingService.shoppingEditFormObject.amount,
         [Validators.required, Validators.min(1)]
       ),
+      id: new FormControl(
+        this.shoppingService.shoppingEditFormObject.id,
+        Validators.required
+      ),
     });
 
     this.shoppingService.shoppingEditForm$
@@ -49,7 +57,7 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
 
     this.shoppingService.ingredientEditing$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((ingredient: IIngredient) => {
+      .subscribe((ingredient: IIngredientId) => {
         this.editMode = true;
         this.selectedIngredient = ingredient;
 

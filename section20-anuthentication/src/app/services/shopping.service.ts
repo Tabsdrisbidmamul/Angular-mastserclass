@@ -6,9 +6,11 @@ import {
   Ingredient,
 } from '../models/ingreidents.model';
 import { v4 as uuidv4 } from 'uuid';
+import { HttpClient } from '@angular/common/http';
+import { AgentService } from './agent.service';
 
 @Injectable({ providedIn: 'root' })
-export class ShoppingService {
+export class ShoppingService extends AgentService {
   ingredientAdded$ = new ReplaySubject<IIngredientId[]>(1);
   ingredientEditing$ = new Subject<IIngredient>();
   shoppingEditForm$ = new ReplaySubject<IIngredientId>(1);
@@ -19,7 +21,11 @@ export class ShoppingService {
     id: uuidv4(),
   };
 
-  private _ingredients: IIngredient[] = [];
+  constructor(protected _http: HttpClient) {
+    super(_http);
+  }
+
+  private _ingredients: IIngredientId[] = [];
 
   get ingredients() {
     return this._ingredients.slice();
@@ -29,7 +35,7 @@ export class ShoppingService {
     this.ingredientEditing$.next(ingredient);
   }
 
-  storeShopping(data: { name: string; amount: number }) {
+  storeShopping(data: IIngredientId) {
     this.shoppingEditForm$.next(data);
   }
 
@@ -79,5 +85,27 @@ export class ShoppingService {
     );
 
     this.ingredientAdded$.next(this.ingredients);
+  }
+
+  fetchIngredients() {
+    this.fetch<IIngredientId>('shoppingList').subscribe((data) => {
+      const _data = data.body ?? [];
+      this.addIngredients(_data);
+    });
+  }
+
+  putIngredients() {
+    this.ingredientAdded$
+      .subscribe((ingredients) => {
+        this._ingredients = ingredients;
+      })
+      .unsubscribe();
+
+    this.put<IIngredient[]>('shoppingList', this.ingredients).subscribe(
+      (data) => {
+        const _data = data as IIngredientId[];
+        this.addIngredients(_data);
+      }
+    );
   }
 }

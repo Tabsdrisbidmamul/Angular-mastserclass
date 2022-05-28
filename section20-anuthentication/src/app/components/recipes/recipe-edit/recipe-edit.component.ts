@@ -51,6 +51,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
     });
 
     if (this.editMode) {
+      console.log('editMode ', this.selectedRecipe);
       this.recipeForm.setValue(this.selectedRecipe);
     }
   }
@@ -90,6 +91,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
       new FormGroup({
         name: new FormControl('', Validators.required),
         amount: new FormControl(1, [Validators.required, Validators.min(1)]),
+        id: new FormControl(uuidv4(), Validators.required),
       }),
     ];
 
@@ -99,6 +101,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
     ) {
       recipeIngredients = [];
       this.recipeService.recipeForm.ingredients.forEach((el) => {
+        const id = el.id ?? uuidv4();
         recipeIngredients.push(
           new FormGroup({
             name: new FormControl(el.name, Validators.required),
@@ -106,6 +109,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
               Validators.required,
               Validators.min(1),
             ]),
+            id: new FormControl(id, Validators.required),
           })
         );
       });
@@ -113,8 +117,6 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
 
     let id: string =
       this.selectedRecipe !== undefined ? this.selectedRecipe.id : uuidv4();
-
-    console.log('id ', id);
 
     this.recipeForm = new FormGroup({
       name: new FormControl(
@@ -136,8 +138,6 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
 
       id: new FormControl(id, Validators.required),
     });
-
-    console.log('recipe form ', this.recipeForm);
   }
 
   addIngredient() {
@@ -145,6 +145,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
       new FormGroup({
         name: new FormControl('', Validators.required),
         amount: new FormControl(1, [Validators.required, Validators.min(1)]),
+        id: new FormControl(uuidv4(), Validators.required),
       })
     );
   }

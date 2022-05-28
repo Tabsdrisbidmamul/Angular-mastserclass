@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { IIngredient } from '../models/ingreidents.model';
-import { ShoppingService } from '../services/shopping.service';
+import { IIngredient } from '../../models/ingreidents.model';
+import { ShoppingService } from '../../services/shopping.service';
 
 @Component({
   selector: 'app-shopping-list',

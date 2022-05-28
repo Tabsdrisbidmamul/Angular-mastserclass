@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { AgentService } from '../services/agent.service';
+import { RecipeService } from '../../services/recipe.service';
+import { ShoppingService } from '../../services/shopping.service';
 
 @Component({
   selector: 'app-header',
@@ -10,7 +11,11 @@ import { AgentService } from '../services/agent.service';
 export class HeaderComponent implements OnInit {
   private routeUrl = '';
 
-  constructor(private _agentService: AgentService, private _router: Router) {}
+  constructor(
+    private _router: Router,
+    private _recipeService: RecipeService,
+    private _shoppingService: ShoppingService
+  ) {}
 
   ngOnInit(): void {
     this._router.events.subscribe((event) => {
@@ -22,21 +27,21 @@ export class HeaderComponent implements OnInit {
 
   onSaveHandler() {
     if (this.routeUrl.includes('recipes')) {
-      this._agentService.putRecipes();
+      this._recipeService.putRecipes();
     }
 
     if (this.routeUrl.includes('shopping-list')) {
-      this._agentService.putIngredients();
+      this._shoppingService.putIngredients();
     }
   }
 
   onFetchHandler() {
     if (this.routeUrl.includes('recipes')) {
-      this._agentService.fetchRecipes().subscribe();
+      this._recipeService.fetchRecipes().subscribe();
     }
 
     if (this.routeUrl.includes('shopping-list')) {
-      this._agentService.fetchIngredients();
+      this._shoppingService.fetchIngredients();
     }
   }
 }

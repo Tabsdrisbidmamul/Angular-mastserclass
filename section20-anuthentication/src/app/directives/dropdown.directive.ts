@@ -14,9 +14,9 @@ export class DropdownDirective {
 
   constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
 
-  @HostListener('mouseenter') mouseover(e: Event) {
-    this.isOpen = true;
-  }
+  // @HostListener('mouseenter') mouseover(e: Event) {
+  //   this.isOpen = true;
+  // }
 
   // @HostListener('click') mouseclick(e: Event) {
   //   this.isOpen = !this.isOpen;
@@ -28,7 +28,7 @@ export class DropdownDirective {
       : false;
   }
 
-  @HostListener('mouseleave') mouseleave(e: Event) {
-    this.isOpen = false;
-  }
+  // @HostListener('mouseleave') mouseleave(e: Event) {
+  //   this.isOpen = false;
+  // }
 }

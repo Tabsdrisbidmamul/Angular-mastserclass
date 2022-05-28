@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AgentService } from './services/agent.service';
+import { RecipeService } from './services/recipe.service';
+import { ShoppingService } from './services/shopping.service';
 
 @Component({
   selector: 'app-root',
@@ -9,10 +11,13 @@ import { AgentService } from './services/agent.service';
 export class AppComponent implements OnInit {
   title = 'shopping-recipe';
 
-  constructor(private _agentService: AgentService) {}
+  constructor(
+    private _shoppingService: ShoppingService,
+    private _recipeService: RecipeService
+  ) {}
 
   ngOnInit(): void {
-    this._agentService.fetchIngredients();
-    this._agentService.fetchRecipes().subscribe();
+    this._shoppingService.fetchIngredients();
+    this._recipeService.fetchRecipes().subscribe();
   }
 }
