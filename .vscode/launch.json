@@ -34,6 +34,14 @@
       "name": "Section19-shopping-recipe-HTTP",
       "url": "http://localhost:4200",
       "webRoot": "${workspaceFolder}//section19-shopping-recipe-HTTP"
+    },
+
+    {
+      "type": "pwa-chrome",
+      "request": "launch",
+      "name": "Section20-authentication",
+      "url": "http://localhost:4200",
+      "webRoot": "${workspaceFolder}//section20-anuthentication"
     }
   ]
 }

@@ -13,8 +13,12 @@ import { ShoppingListComponent } from './components/shopping-list/shopping-list.
 const routes: Route[] = [
   {
     path: '',
-    redirectTo: 'recipes',
+    redirectTo: 'auth',
     pathMatch: 'full',
+  },
+  {
+    path: 'auth',
+    component: AuthComponent,
   },
   {
     path: 'recipes',
@@ -50,10 +54,7 @@ const routes: Route[] = [
       },
     ],
   },
-  {
-    path: 'auth',
-    component: AuthComponent,
-  },
+
   // {
   //   path: 'not-found',
   //   component: ErrorPageComponent,

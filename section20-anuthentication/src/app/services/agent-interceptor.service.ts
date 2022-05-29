@@ -3,43 +3,55 @@ import {
   HttpHandler,
   HttpInterceptor,
   HttpRequest,
-  HTTP_INTERCEPTORS,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { exhaustMap, first, take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class AgentInterceptor implements HttpInterceptor {
+  constructor(private _authService: AuthService) {}
+
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     const apiKey = environment.apiKey;
-
     const BASE_URL_SIGNUP = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`;
-
+    const BASE_URL_LOGIN = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`;
     const BASE_URL_DB = 'https://angular-e2153-default-rtdb.firebaseio.com/';
-
+    let apiReq: HttpRequest<any>;
     // default to auth endpoint
-    let isEndpoint = 'SIGNUP';
+    let isEndpoint = 'DB';
     if (req.headers.has('useEndpoint')) {
       isEndpoint = req.headers.get('useEndpoint');
     }
+    const token = this._authService.token;
 
     switch (isEndpoint) {
       case 'SIGNUP': {
-        const apiReq = req.clone({
+        apiReq = req.clone({
           url: `${BASE_URL_SIGNUP}`,
           headers: req.headers.delete('useEndpoint', 'SIGNUP'),
         });
-        console.log(apiReq);
-        return next.handle(apiReq);
+        break;
+      }
+      case 'LOGIN': {
+        apiReq = req.clone({
+          url: `${BASE_URL_LOGIN}`,
+          headers: req.headers.delete('useEndpoint', 'LOGIN'),
+        });
+        break;
       }
       case 'DB': {
-        const apiReq = req.clone({ url: `${BASE_URL_DB}${req.url}.json` });
-        return next.handle(apiReq);
+        apiReq = req.clone({
+          url: `${BASE_URL_DB}${req.url}.json?auth=${token}`,
+        });
+        break;
       }
     }
+    return next.handle(apiReq);
   }
 }

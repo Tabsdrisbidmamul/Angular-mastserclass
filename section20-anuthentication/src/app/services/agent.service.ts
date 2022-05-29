@@ -21,8 +21,12 @@ export class AgentService {
     });
   }
 
-  protected post<Type>(endpoint: string, postData: {}, useEndpoint = 'DB') {
-    return this._http.post<Type>(endpoint, postData, {
+  protected post<TypeA, TypeB>(
+    endpoint: string,
+    postData: TypeA,
+    useEndpoint = 'DB'
+  ) {
+    return this._http.post<TypeB>(endpoint, postData, {
       headers: { useEndpoint },
     });
   }
