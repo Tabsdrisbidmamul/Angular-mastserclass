@@ -1,5 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { IAuthRequestDTO, IAuthResponseDTO } from '../models/auth.model';
@@ -9,14 +10,10 @@ import { AgentService } from './agent.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService extends AgentService {
-  user$ = new Subject<User>();
+  user$ = new BehaviorSubject<User>(null);
 
-  constructor(protected _http: HttpClient) {
+  constructor(protected _http: HttpClient, private _router: Router) {
     super(_http);
-  }
-
-  get token() {
-    return localStorage.getItem('token');
   }
 
   login(email: string, password: string) {
@@ -25,6 +22,11 @@ export class AuthService extends AgentService {
       { email, password, returnSecureToken: true },
       'LOGIN'
     ).pipe(catchError(this.handleAuthError), tap(this.handleAuth));
+  }
+
+  logout() {
+    this.user$.next(null);
+    this._router.navigate(['']);
   }
 
   signup(email: string, password: string) {
@@ -52,7 +54,6 @@ export class AuthService extends AgentService {
     );
 
     this.user$.next(user);
-    localStorage.setItem('token', user.token);
   };
 
   private handleAuthError(errorRes: HttpErrorResponse): Observable<string> {

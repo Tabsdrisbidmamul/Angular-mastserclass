@@ -31,7 +31,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
 
     this._authService.user$.pipe(takeUntil(this.destroy$)).subscribe((user) => {
-      if ((user !== null || user !== undefined) && user.token !== null) {
+      if (user !== null && user?.token !== null) {
         this.isLoggedIn = true;
       }
     });
@@ -39,6 +39,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.destroy$.unsubscribe();
+  }
+
+  onLogoutHandler() {
+    this._authService.logout();
+    this.isLoggedIn = false;
   }
 
   onSaveHandler() {
