@@ -22,6 +22,8 @@ export class AppComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this._authService.autoLogin();
+
     this._authService.user$.pipe(takeUntil(this.destroy$)).subscribe((user) => {
       if (user !== null) {
         this._shoppingService.fetchIngredients();

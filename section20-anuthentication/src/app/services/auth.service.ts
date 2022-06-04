@@ -4,13 +4,13 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { IAuthRequestDTO, IAuthResponseDTO } from '../models/auth.model';
-import { User } from '../models/user.model';
-import { AgentInterceptor } from './agent-interceptor.service';
+import { IUserLocalStorage, User } from '../models/user.model';
 import { AgentService } from './agent.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService extends AgentService {
   user$ = new BehaviorSubject<User>(null);
+  private tokenTimerInterval;
 
   constructor(protected _http: HttpClient, private _router: Router) {
     super(_http);
@@ -24,9 +24,35 @@ export class AuthService extends AgentService {
     ).pipe(catchError(this.handleAuthError), tap(this.handleAuth));
   }
 
+  autoLogin() {
+    let user = this.getUserLocalStorage();
+    if (user === null) return;
+
+    const _user = User.buildUserWithParametersFromLocalStorage(user);
+
+    if (_user.token !== null) {
+      this.storeUser(_user);
+      const expirationDate = this.getCurrentTokenExpirationDate(
+        _user.tokenExpires
+      );
+      this.setAutoLogoutTimer(expirationDate);
+    }
+  }
+
   logout() {
     this.user$.next(null);
     this._router.navigate(['']);
+    this.clearUserLocalStorage();
+
+    if (this.tokenTimerInterval) {
+      clearInterval(this.tokenTimerInterval);
+    }
+
+    this.tokenTimerInterval = null;
+  }
+
+  autoLogout(expiresIn: number) {
+    this.tokenTimerInterval = setTimeout(() => this.logout(), expiresIn);
   }
 
   signup(email: string, password: string) {
@@ -41,20 +67,51 @@ export class AuthService extends AgentService {
     ).pipe(catchError(this.handleAuthError), tap(this.handleAuth));
   }
 
+  storeUserLocalStorage(user: User) {
+    localStorage.setItem('userData', JSON.stringify(user));
+  }
+
+  getUserLocalStorage(): IUserLocalStorage | null {
+    return JSON.parse(localStorage.getItem('userData'));
+  }
+
+  clearUserLocalStorage() {
+    localStorage.removeItem('userData');
+  }
+
   private handleAuth = (res: string | IAuthResponseDTO) => {
     if (res instanceof String) return;
 
     const _res = res as IAuthResponseDTO;
 
-    const user: User = new User(
+    const user: User = User.buildUserWithParameters(
       _res.email,
       _res.localId,
       _res.idToken,
       new Date(new Date().getTime() + parseInt(_res.expiresIn) * 1000)
     );
 
-    this.user$.next(user);
+    this.storeUser(user);
+    this.setAutoLogoutTimer(user.tokenExpires.getTime());
   };
+
+  private storeUser(user: User) {
+    this.user$.next(user);
+
+    if (this.getUserLocalStorage() === null) {
+      this.storeUserLocalStorage(user);
+    }
+
+    this._router.navigate(['recipes']);
+  }
+
+  private setAutoLogoutTimer(tokenExpires: number) {
+    this.autoLogout(tokenExpires);
+  }
+
+  private getCurrentTokenExpirationDate(tokenDate: Date) {
+    return tokenDate.getTime() - new Date().getTime();
+  }
 
   private handleAuthError(errorRes: HttpErrorResponse): Observable<string> {
     let errorMsg = 'Something went wrong';
