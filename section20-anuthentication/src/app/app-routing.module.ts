@@ -9,6 +9,7 @@ import { RecipesComponent } from './components/recipes/recipes.component';
 import { RecipeResolverService } from './services/recipe-resolver.service';
 import { ShoppingEditComponent } from './components/shopping-list/shopping-edit/shopping-edit.component';
 import { ShoppingListComponent } from './components/shopping-list/shopping-list.component';
+import { AuthGuard } from './services/auth.guard';
 
 const routes: Route[] = [
   {
@@ -23,6 +24,7 @@ const routes: Route[] = [
   {
     path: 'recipes',
     component: RecipesComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',
@@ -47,6 +49,7 @@ const routes: Route[] = [
   {
     path: 'shopping-list',
     component: ShoppingListComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: ':name',
