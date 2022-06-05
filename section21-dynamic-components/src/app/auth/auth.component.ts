@@ -1,22 +1,41 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  ComponentFactoryResolver,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { IAuthResponseDTO } from '../models/auth.model';
 import { Router } from '@angular/router';
+import { AlertComponent } from '../common/alert/alert.component';
+import { PlaceholderDirective } from '../directives/placeholder/placeholder.directive';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.css'],
 })
-export class AuthComponent implements OnInit {
+export class AuthComponent implements OnInit, OnDestroy {
   isLogin = true;
   form: FormGroup;
   isLoading = false;
   error: string = null;
+  @ViewChild(PlaceholderDirective) alertHost: PlaceholderDirective;
+  private destroy$ = new Subject();
 
-  constructor(private _authService: AuthService, private _router: Router) {}
+  constructor(
+    private _authService: AuthService,
+    private _router: Router,
+    private _componentFactoryResolver: ComponentFactoryResolver
+  ) {}
+
+  ngOnDestroy(): void {
+    this.destroy$.unsubscribe();
+  }
 
   ngOnInit() {
     this.form = new FormGroup({
@@ -65,10 +84,28 @@ export class AuthComponent implements OnInit {
       },
       (errorMessage) => {
         this.error = errorMessage;
+        this.showError(errorMessage);
         this.isLoading = false;
       }
     );
 
     this.form.reset();
+  }
+
+  private showError(msg: string) {
+    const alertComp =
+      this._componentFactoryResolver.resolveComponentFactory(AlertComponent);
+
+    const hostViewContainerRef = this.alertHost.viewContainerRef;
+    hostViewContainerRef.clear();
+
+    const componentRef = hostViewContainerRef.createComponent(alertComp);
+
+    componentRef.instance.message = msg;
+    componentRef.instance.close
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) hostViewContainerRef.clear();
+      });
   }
 }

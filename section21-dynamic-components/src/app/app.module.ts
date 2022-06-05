@@ -19,6 +19,7 @@ import { AgentInterceptor } from './services/agent-interceptor.service';
 import { AuthComponent } from './auth/auth.component';
 import { LoaderComponent } from './common/loader/loader.component';
 import { AlertComponent } from './common/alert/alert.component';
+import { PlaceholderDirective } from './directives/placeholder/placeholder.directive';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { AlertComponent } from './common/alert/alert.component';
     ShoppingListComponent,
     ShoppingEditComponent,
     DropdownDirective,
+    PlaceholderDirective,
     RecipeStartComponent,
     RecipeEditComponent,
     AuthComponent,
